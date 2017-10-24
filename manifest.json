@@ -1,0 +1,35 @@
+{
+  "manifest_version": 2,
+
+  "name": "Archer Investigator",
+  "description": "This extension will save the current webpage and send it to your dashboard.",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "search-icon.png",
+    "default_popup": "popup.html"
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "pageCapture",
+    "downloads"
+  ],
+
+  "background": { 
+    "scripts": [
+      "jquery-3.2.1.min.js",
+      "background.js"
+    ]
+  },
+
+  "commands": {
+    "save": {
+      "suggested_key": {
+        "default": "Alt+1"
+      }, 
+      "description": "Save the current webpage."
+    }
+  }
+}
