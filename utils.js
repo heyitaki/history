@@ -4,10 +4,11 @@ function savePage() {
       var tab = tabs[0];
       chrome.pageCapture.saveAsMHTML({tabId: tab.id}, function(data) {
         var url = URL.createObjectURL(data);
-        var fileName = constructFileName(tab.url);
+        var filename = constructFileName(tab.url);
         chrome.downloads.download({
             url: url,
-            filename: fileName
+            filename: filename,
+            saveAs: false
         });
       });
     }
