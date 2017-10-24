@@ -22,23 +22,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function savePage() {
   chrome.tabs.query({active: true},
-    function(array_of_Tabs) {
-      console.log("hello");
-      console.log(array_of_Tabs.length > 0);
-      if (array_of_Tabs.length > 0) {
-        var tab = array_of_Tabs[0];
-        console.log("getting tabid: "+tab.id);
+    function(tab_array) {
+      if (tab_array.length > 0) {
+        var tab = tab_array[0];
         chrome.pageCapture.saveAsMHTML({tabId: tab.id}, function(data) {
           var url = URL.createObjectURL(data);
+          var fileName = constructFileName(tab.url);
           chrome.downloads.download({
               url: url,
-              filename: 'whatever.mhtml'
+              filename: fileName
           });
         });
       }
     }
   );
-  alert("hello");
+}
+
+function constructFileName(url) {
+  //return text.replace(/[^a-z0-9_\- ()\[\]]/gi, '');
+  return sha256(url) + ".mhtml";
 }
 
 function saveCurrentUrl() {
