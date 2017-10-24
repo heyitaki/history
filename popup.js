@@ -6,7 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.commands.onCommand.addListener(function(command) {
     switch (command) {
       case 'save':
+        console.log('font');
         savePage();
+        saveCurrentUrl();
     }
   });
 
@@ -19,29 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
-
-function savePage() {
-  chrome.tabs.query({active: true},
-    function(tab_array) {
-      if (tab_array.length > 0) {
-        var tab = tab_array[0];
-        chrome.pageCapture.saveAsMHTML({tabId: tab.id}, function(data) {
-          var url = URL.createObjectURL(data);
-          var fileName = constructFileName(tab.url);
-          chrome.downloads.download({
-              url: url,
-              filename: fileName
-          });
-        });
-      }
-    }
-  );
-}
-
-function constructFileName(url) {
-  //return text.replace(/[^a-z0-9_\- ()\[\]]/gi, '');
-  return sha256(url) + ".mhtml";
-}
 
 function saveCurrentUrl() {
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
@@ -76,13 +55,13 @@ function writeUrlToDom(url) {
   urlLink.setAttribute('target', '_blank');
   urlLink.setAttribute('rel', 'noopener noreferrer');
 
-  var urlHash = url.hashCode();
+  var urlHash = sha256(url);
   var urlEntry = document.createElement('li');
   urlEntry.appendChild(urlLink);
   urlEntry.setAttribute('id', urlHash);
   $("#savedUrls").append(urlEntry);
 
-  $("#"+urlHash).click(function() {
+  $("#" + urlHash).click(function() {
     $(this).remove();
     removeUrl(url);
   });
