@@ -25,33 +25,3 @@ li:hover {
 a {
   text-decoration: none;
 }
-
-button:focus {
-  outline: 0;
-}
-
-.btn {
-  font-family: monospace;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
-  cursor: pointer;
-  margin: 5px 5px 10px 5px;
-  padding: 10px 20px 10px 20px;
-  background-color: transparent;
-  -webkit-transition: all 0.1s;
-  -moz-transition: all 0.1s;
-  transition: all 0.1s;
-}
-
-.btn-gray {
-  border: 2px solid rgba(134, 144, 160,1);
-}
-
-.btn-gray:hover {
-  background-color: rgba(164, 177, 196,.4);
-}
-
-.btn-gray:active {
-  background-color: rgba(164, 177, 196,.7);
-}

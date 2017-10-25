@@ -7,6 +7,7 @@ function savePage() {
         var filename = constructFileName(tab.url);
         chrome.downloads.download({
             url: url,
+            conflictAction:"overwrite",
             filename: filename,
             saveAs: false
         });
@@ -17,5 +18,5 @@ function savePage() {
 
 function constructFileName(url) {
   //return text.replace(/[^a-z0-9_\- ()\[\]]/gi, '');
-  return sha256(url) + ".mhtml";
+  return "./pages/" + sha256(url) + ".mhtml";
 }

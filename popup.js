@@ -1,8 +1,6 @@
 var urlList = [];
 
 document.addEventListener('DOMContentLoaded', function() {
-  $('#save').click(savePage);
-
   chrome.commands.onCommand.addListener(function(command) {
     switch (command) {
       case 'save':

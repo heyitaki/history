@@ -14,7 +14,8 @@
     "storage",
     "tabs",
     "pageCapture",
-    "downloads"
+    "downloads",
+    "downloads.shelf"
   ],
 
   "background": { 
