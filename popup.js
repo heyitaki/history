@@ -2,9 +2,9 @@ var urlList = [];
 
 document.addEventListener('DOMContentLoaded', function() {
   chrome.commands.onCommand.addListener(function(command) {
+    console.log(command);
     switch (command) {
       case 'save':
-        console.log('font');
         savePage();
         saveCurrentUrl();
     }
