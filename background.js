@@ -2,10 +2,9 @@ chrome.commands.onCommand.addListener(function(command) {
   console.log(command);
   switch (command) {
     case 'save':
-      console.log('hello');
+      runPyScript('1', '2', '3');
       savePage();
       saveCurrentUrl();
-      console.log(runPyScript('1', '2', '3'));
   }
 });
 
@@ -26,21 +25,19 @@ function saveCurrentUrl() {
 
 function runPyScript(bucket, src_path, dst_path){
   console.log('run python script BEGIN');
-  var jqXHR = $.ajax({
-    type: 'POST',
+  $.ajax({
+    type: 'GET',
     url: 'http://localhost:5000/',
     crossDomain: true,
+    jsonpCallback: 'callback',
     async: false,
     dataType: 'jsonp',
     data: { bucket: bucket, src_path: src_path, dst_path: dst_path }
-  });
-
-  jqXHR.done(function(result){
-    console.log('JQXHR start');
+  }).fail(function(jqXHR, status, error){ 
+    console.log(jqXHR);
+    console.log(status);
+    console.log(error);
+  }).done(function(result){
     console.log(result);
-    console.log('JQXHR end');
-    alert(result);
   });
-
-  return jqXHR.responseText;
 }

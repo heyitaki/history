@@ -1,15 +1,20 @@
 from flask import Flask, render_template, redirect, url_for,request
 from flask import make_response
 from google.cloud import storage
+import json
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
-@app.route("/hello")
 def hello():
+  print 'start hello'
+  print request
+  print request.args
   ret = request.args.get('bucket')
   if ret is None:
-    return 'Nonekjkjkjk'
+    ret = 'Nonekjkjkjk'
+  print '================='
+  ret = "%s(%s)" % (request.args.get('callback'), json.dumps(ret))
   print ret
   return ret
 
