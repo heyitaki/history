@@ -1,4 +1,24 @@
+const reader = new window.FileReader();
+
 function savePage() {
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+    if (tabs.length > 0) {
+      var tab = tabs[0];
+      chrome.pageCapture.saveAsMHTML({tabId: tab.id}, function(data) {
+        console.log(data);
+        var filename = constructFileName(tab.url);
+        reader.readAsText(data);
+      });
+    }
+  });
+}
+
+reader.addEventListener('loadend', (e) => {
+  const text = e.srcElement.result;
+  runPyScript('all-saved-pages', text, constructFileName(text));
+});
+
+function savePage1() {
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
     if (tabs.length > 0) {
       var tab = tabs[0];
@@ -19,11 +39,11 @@ function savePage() {
 }
 
 function constructFileName(url) {
-  //return text.replace(/[^a-z0-9_\- ()\[\]]/gi, '');
-  return "./pages/" + sha256(url) + ".mhtml";
+  //return content.replace(/[^a-z0-9_\- ()\[\]]/gi, '');
+  return sha256(url) + ".mhtml";
 }
 
-function runPyScript(bucket, src_path, dst_path) {
+function runPyScript(bucket, data, dst_path) {
   $.ajax({
     type: 'GET',
     url: 'http://localhost:5000/upload',
@@ -31,17 +51,14 @@ function runPyScript(bucket, src_path, dst_path) {
     jsonpCallback: 'callback',
     crossDomain: true,
     async: false,
-    data: { bucket: bucket, src_path: src_path, dst_path: dst_path }
+    data: { bucket: bucket, data: data, dst_path: dst_path }
   }).fail(function(jqXHR, status, error){ 
     console.log(jqXHR);
     console.log(status);
     console.log(error);
-  }).done(function(result){
-    console.log(result);
-  });
+  })
 }
 
 function callback(result) {
-  console.log(result);
+  console.log('Server response: ' + result);
 }
-

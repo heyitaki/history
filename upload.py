@@ -19,13 +19,13 @@ def upload():
   print 'UPLOAD ARGS: '
   print args
   bucket_name = args.get('bucket')
+  data = args.get('data')
   destination_blob_name = args.get('dst_path')
-  source_file_name = args.get('src_path')
 
   storage_client = storage.Client.from_service_account_json('./archer-extension-8dcc72352171.json')
   bucket = storage_client.get_bucket(bucket_name)
   blob = bucket.blob(destination_blob_name)
-  blob.upload_from_filename(source_file_name)
+  blob.upload_from_string(data)
 
   return construct_ret(args, 'File %s uploaded to %s.' % (source_file_name, destination_blob_name))
     

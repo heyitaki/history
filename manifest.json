@@ -15,9 +15,7 @@
   "permissions": [
     "storage",
     "tabs",
-    "pageCapture",
-    "downloads",
-    "downloads.shelf"
+    "pageCapture"
   ],
 
   "background": { 
