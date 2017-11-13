@@ -18,6 +18,23 @@ document.addEventListener('DOMContentLoaded', function() {
       } 
     }
   });
+
+  chrome.storage.sync.get({entityList:[]}, function(data) {
+    entityList = data.entityList;
+    if (entityList.length > 0) {
+      for (var i = Math.max(0, entityList.length-1); i >= Math.max(0, entityList.length-10); i--) {
+        writeEntityToDom(entityList[i]);
+      } 
+    }
+  });
+
+  // Remove scrollbar
+  var styleElement = document.createElement('style');
+  styleElement.id = 'remove-scroll-style';
+  styleElement.textContent =
+      'html::-webkit-scrollbar{display:none !important}' +
+      'body::-webkit-scrollbar{display:none !important}';
+  document.getElementsByTagName('body')[0].appendChild(styleElement);
 });
 
 function saveCurrentUrl() {
@@ -60,6 +77,22 @@ function writeUrlToDom(url) {
   $("#savedUrls").append(urlEntry);
 
   $("#" + urlHash).click(function() {
+    $(this).remove();
+    removeUrl(url);
+  });
+}
+
+function writeEntityToDom(entity) {
+  var entityText = document.createElement('a');
+  entityText.text = entity;
+
+  var entityEntry = document.createElement('li');
+  entityEntry.appendChild(entityText);
+  entityHash = sha256(entity);
+  entityEntry.setAttribute('id', entityHash);
+
+  $("#savedEntities").append(entityEntry);
+  $("#" + entityHash).click(function() {
     $(this).remove();
     removeUrl(url);
   });

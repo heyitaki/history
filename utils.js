@@ -32,7 +32,7 @@ function savePage1() {
             saveAs: false
         });
         filename = filename.substring(8);
-        runPyScript('all-saved-pages', '~/Downloads/pages/c97299b933a8189e05284334cfef80a870e55d99fe69f7df7497c1122dc0540c.mhtml', filename);
+        runPyScript('all-saved-pages', 'get dl dir', filename);
       });
     }
   });

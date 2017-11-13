@@ -13,9 +13,10 @@
   },
 
   "permissions": [
+    "contextMenus",
+    "pageCapture",
     "storage",
-    "tabs",
-    "pageCapture"
+    "tabs"
   ],
 
   "background": { 

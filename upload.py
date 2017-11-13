@@ -6,7 +6,7 @@ import json
 app = Flask(__name__)
 
 def construct_ret(args, ret_text):
-	return "%s(%s)" % (args.get('callback'), json.dumps(ret_text))
+	return json.dumps(ret_text)
 
 @app.route('/', methods=['GET', 'POST'])
 def test():
@@ -16,8 +16,6 @@ def test():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
   args = request.args
-  print 'UPLOAD ARGS: '
-  print args
   bucket_name = args.get('bucket')
   data = args.get('data')
   destination_blob_name = args.get('dst_path')
