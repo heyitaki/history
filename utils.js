@@ -18,28 +18,7 @@ reader.addEventListener('loadend', (e) => {
   runPyScript('all-saved-pages', text, constructFileName(text));
 });
 
-function savePage1() {
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
-    if (tabs.length > 0) {
-      var tab = tabs[0];
-      chrome.pageCapture.saveAsMHTML({tabId: tab.id}, function(data) {
-        var url = URL.createObjectURL(data);
-        var filename = constructFileName(tab.url);
-        chrome.downloads.download({
-            url: url,
-            conflictAction: "overwrite",
-            filename: filename,
-            saveAs: false
-        });
-        filename = filename.substring(8);
-        runPyScript('all-saved-pages', 'get dl dir', filename);
-      });
-    }
-  });
-}
-
 function constructFileName(url) {
-  //return content.replace(/[^a-z0-9_\- ()\[\]]/gi, '');
   return sha256(url) + ".mhtml";
 }
 
