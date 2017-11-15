@@ -23,9 +23,9 @@ def upload():
   storage_client = storage.Client.from_service_account_json('./archer-extension-8dcc72352171.json')
   bucket = storage_client.get_bucket(bucket_name)
   blob = bucket.blob(destination_blob_name)
-  blob.upload_from_string(data)
+  blob.upload_from_string(data, content_type='multipart/related')
 
-  return construct_ret(args, 'File %s uploaded to %s.' % (source_file_name, destination_blob_name))
+  return construct_ret(args, 'File uploaded to %s.' % (destination_blob_name))
     
 if __name__ == "__main__":
   app.run(debug=True)

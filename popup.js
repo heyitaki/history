@@ -73,17 +73,6 @@ function saveCurrentUrl() {
   });
 }
 
-function removeUrl(url) {
-  chrome.storage.sync.get({urlList:[]}, function(data) {
-    urlList = data.urlList;
-    var idx = urlList.indexOf(url);
-    if (idx >= 0) {
-      urlList.splice(idx, 1);
-    }
-    saveUrlList();
-  });
-}
-
 function saveUrlList(callback) {
   chrome.storage.sync.set({urlList:urlList}, callback);
 }
@@ -107,6 +96,17 @@ function writeUrlToDom(url) {
   });
 }
 
+function removeUrl(url) {
+  chrome.storage.sync.get({urlList:[]}, function(data) {
+    urlList = data.urlList;
+    var idx = urlList.indexOf(url);
+    if (idx >= 0) {
+      urlList.splice(idx, 1);
+    }
+    saveUrlList();
+  });
+}
+
 function writeEntityToDom(entity) {
   var entityText = document.createElement('a');
   entityText.text = entity;
@@ -119,7 +119,18 @@ function writeEntityToDom(entity) {
   $("#savedEntities").append(entityEntry);
   $("#" + entityHash).click(function() {
     $(this).remove();
-    removeUrl(url);
+    removeEntity(entity);
+  });
+}
+
+function removeEntity(entity) {
+  chrome.storage.sync.get({entityList:[]}, function(data) {
+    entityList = data.entityList;
+    var idx = entityList.indexOf(entity);
+    if (idx >= 0) {
+      entityList.splice(idx, 1);
+    }
+    chrome.storage.sync.set({entityList:entityList});
   });
 }
 
