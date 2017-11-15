@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.storage.sync.get({urlList:[]}, function(data) {
     urlList = data.urlList;
     if (urlList.length > 0) {
-      for (var i = Math.max(0, urlList.length-1); i >= Math.max(0, urlList.length-10); i--) {
+      for (var i = Math.max(0, urlList.length-1); i >= Math.max(0, urlList.length-5); i--) {
         writeUrlToDom(urlList[i]);
       } 
     }
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.storage.sync.get({entityList:[]}, function(data) {
     entityList = data.entityList;
     if (entityList.length > 0) {
-      for (var i = Math.max(0, entityList.length-1); i >= Math.max(0, entityList.length-10); i--) {
+      for (var i = Math.max(0, entityList.length-1); i >= Math.max(0, entityList.length-5); i--) {
         writeEntityToDom(entityList[i]);
       } 
     }
