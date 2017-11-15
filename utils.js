@@ -48,14 +48,10 @@ function runPyScript(bucket, data, dst_path) {
     type: 'GET',
     url: 'http://localhost:5000/upload',
     dataType: 'jsonp',
-    jsonpCallback: 'callback',
-    crossDomain: true,
     async: false,
     data: { bucket: bucket, data: data, dst_path: dst_path }
   }).fail(function(jqXHR, status, error){ 
-    console.log(jqXHR);
-    console.log(status);
-    console.log(error);
+    console.log(jqXHR, status, error);
   })
 }
 
