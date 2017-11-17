@@ -16,11 +16,11 @@ def test():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
   args = request.args
-  bucket_name = args.get('bucket')
+  bucket_name = 'dashboard-userdocs'
   data = args.get('data')
   destination_blob_name = args.get('dst_path')
 
-  storage_client = storage.Client.from_service_account_json('./archer-extension-8dcc72352171.json')
+  storage_client = storage.Client.from_service_account_json('flagship-b84a93e41793.json')
   bucket = storage_client.get_bucket(bucket_name)
   blob = bucket.blob(destination_blob_name)
   blob.upload_from_string(data, content_type='multipart/related')
