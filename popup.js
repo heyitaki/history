@@ -1,32 +1,16 @@
-var urlList = [];
-
 document.addEventListener('DOMContentLoaded', function() {
   chrome.commands.onCommand.addListener(function(command) {
     console.log(command);
     switch (command) {
       case 'save':
         savePage();
+        console.log('saving page');
         saveCurrentUrl();
     }
   });
 
-  chrome.storage.sync.get({urlList:[]}, function(data) {
-    urlList = data.urlList;
-    if (urlList.length > 0) {
-      for (var i = Math.max(0, urlList.length-1); i >= Math.max(0, urlList.length-5); i--) {
-        writeUrlToDom(urlList[i]);
-      } 
-    }
-  });
-
-  chrome.storage.sync.get({entityList:[]}, function(data) {
-    entityList = data.entityList;
-    if (entityList.length > 0) {
-      for (var i = Math.max(0, entityList.length-1); i >= Math.max(0, entityList.length-5); i--) {
-        writeEntityToDom(entityList[i]);
-      } 
-    }
-  });
+  loadUrls();
+  loadEntities();  
 
   // Remove scrollbar
   var styleElement = document.createElement('style');
@@ -62,79 +46,105 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-function saveCurrentUrl() {
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
-    url = tabs[0].url;
-    if (urlList.indexOf(url) === -1) {
-      urlList.push(url);
-      saveUrlList();
-      writeUrlToDom(url);
+//===== SAVE PAGE =====
+function loadUrls() {
+  chrome.storage.sync.get({urlToTitleDict:{}}, function(data) {
+    var urlToTitleDict = data.urlToTitleDict;
+    var dictKeys = Object.keys(urlToTitleDict);
+    if (dictKeys.length > 0) {
+      for (var i = Math.max(0, dictKeys.length-1); i >= Math.max(0, dictKeys.length-5); i--) {
+        writeUrlToDom(dictKeys[i], urlToTitleDict[dictKeys[i]]);
+      } 
     }
   });
 }
 
-function saveUrlList(callback) {
-  chrome.storage.sync.set({urlList:urlList}, callback);
+function saveCurrentUrl() {
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+    if (tabs.length > 0) {
+      var tab = tabs[0];
+      chrome.storage.sync.get({urlToTitleDict:{}}, function(data) {
+        var urlToTitleDict = data.urlToTitleDict;
+        if (Object.keys(urlToTitleDict).indexOf(tab.url) < 0) {
+          urlToTitleDict[tab.url] = tab.title;
+          chrome.storage.sync.set({urlToTitleDict:urlToTitleDict});
+
+        }
+      });
+    }
+  });
 }
 
-function writeUrlToDom(url) {
-  var urlLink = document.createElement('a');
-  urlLink.text = url;
-  urlLink.setAttribute('href', url);
-  urlLink.setAttribute('target', '_blank');
-  urlLink.setAttribute('rel', 'noopener noreferrer');
+function writeUrlToDom(url, title) {
+  var titleElement = document.createElement('a');
+  titleElement.text = title;
+
+  var urlElement = document.createElement('a');
+  urlElement.className = 'urlcaption';
+  urlElement.text = url;
+  urlElement.setAttribute('href', url);
+  urlElement.setAttribute('target', '_blank');
+  urlElement.setAttribute('rel', 'noopener noreferrer');
+
+  
+  var listEntry = document.createElement('li');
+  listEntry.appendChild(titleElement);
+  listEntry.appendChild(urlElement);
 
   var urlHash = sha256(url);
-  var urlEntry = document.createElement('li');
-  urlEntry.appendChild(urlLink);
-  urlEntry.setAttribute('id', urlHash);
-  $("#savedUrls").append(urlEntry);
-
+  listEntry.setAttribute('id', urlHash);
   $("#" + urlHash).click(function() {
     $(this).remove();
     removeUrl(url);
   });
+
+  $("#savedUrls").append(listEntry);
 }
 
 function removeUrl(url) {
-  chrome.storage.sync.get({urlList:[]}, function(data) {
-    urlList = data.urlList;
-    var idx = urlList.indexOf(url);
+  chrome.storage.sync.get({urlToEntityDict:{}}, function(data) {
+    var urlToEntityDict = data.urlToEntityDict;
+    var idx = Object.keys(urlToEntityDict).indexOf(url);
     if (idx >= 0) {
-      urlList.splice(idx, 1);
+      urlToEntityDict[url] = undefined;
     }
-    saveUrlList();
+
+    chrome.storage.sync.set({urlToEntityDict:urlToEntityDict});
   });
 }
 
-function writeEntityToDom(entity) {
-  var entityText = document.createElement('a');
-  entityText.text = entity;
-
-  var entityEntry = document.createElement('li');
-  entityEntry.appendChild(entityText);
-  entityHash = sha256(entity);
-  entityEntry.setAttribute('id', entityHash);
-
-  $("#savedEntities").append(entityEntry);
-  $("#" + entityHash).click(function() {
-    $(this).remove();
-    removeEntity(entity);
-  });
-}
-
-function removeEntity(entity) {
-  chrome.storage.sync.get({entityList:[]}, function(data) {
-    entityList = data.entityList;
-    var idx = entityList.indexOf(entity);
-    if (idx >= 0) {
-      entityList.splice(idx, 1);
+//===== SAVE ENTITY =====
+function loadEntities() {
+  chrome.storage.sync.get({urlToEntityDict:{}}, function(data) {
+    var urlToEntityDict = data.urlToEntityDict;
+    var dictKeys = Object.keys(urlToEntityDict);
+    if (dictKeys.length > 0) {
+      for (var i = Math.max(0, dictKeys.length-1); i >= Math.max(0, dictKeys.length-5); i--) {
+        writeEntityToDom(dictKeys[i], urlToEntityDict[dictKeys[i]]);
+      } 
     }
-    chrome.storage.sync.set({entityList:entityList});
   });
 }
 
-function clear() {
-  $("#savedUrls").html("");
-  chrome.storage.sync.clear();
+function writeEntityToDom(url, entities) {
+  var entitiesElement = document.createElement('a');
+  entitiesElement.text = entities.join(', ');
+
+  var urlElement = document.createElement('a');
+  urlElement.className = 'urlcaption';
+  urlElement.text = url;
+  urlElement.setAttribute('href', url);
+  urlElement.setAttribute('target', '_blank');
+  urlElement.setAttribute('rel', 'noopener noreferrer');
+
+  var listEntry = document.createElement('li');
+  listEntry.appendChild(entitiesElement);
+  listEntry.appendChild(urlElement);
+
+  $("#savedEntities").append(listEntry);
+}
+
+//===== SETTINGS =====
+function clearElement(id) {
+  $(id).html("");
 }

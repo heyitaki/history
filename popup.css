@@ -37,9 +37,9 @@ a {
   font-weight: 700;
   border-bottom: 1px solid #CCC;
   position: relative;
-  -webkit-transition: all 0.4s ease;
-  -o-transition: all 0.4s ease;
-  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s linear;
+  -o-transition: all 0.4s linear;
+  transition: all 0.4s linear;
 }
 
 .accordion li:last-child .link {
@@ -52,9 +52,9 @@ a {
   left: 12px;
   font-size: 18px;
   color: #595959;
-  -webkit-transition: all 0.4s ease;
-  -o-transition: all 0.4s ease;
-  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s linear;
+  -o-transition: all 0.4s linear;
+  transition: all 0.4s linear;
 }
 
 .accordion li i.fa-chevron-down {
@@ -88,12 +88,6 @@ a {
 .submenu li {
   border-bottom: 1px solid #434343;
   font-family: Tahoma;
-}
-
-.submenu a {
-  display: block;
-  text-decoration: none;
-  color: #d9d9d9;
   padding: 12px;
   padding-left: 42px;
   -webkit-transition: all 0.25s ease;
@@ -101,8 +95,18 @@ a {
   transition: all 0.25s ease;
 }
 
-.submenu a:hover {
+.submenu li:hover {
   background: #b63b4d;
   color: #FFF;
 }
 
+.submenu a {
+  display: block;
+  text-decoration: none;
+  color: #FFF;
+}
+
+.submenu .urlcaption {
+  font-size: 12px;
+  color: #c4c4c4;
+}

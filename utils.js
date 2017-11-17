@@ -15,20 +15,20 @@ function savePage() {
 
 reader.addEventListener('loadend', (e) => {
   const text = e.srcElement.result;
-  runPyScript('all-saved-pages', text, constructFileName(text));
+  runPyScript(text, constructFileName(text));
 });
 
 function constructFileName(url) {
   return sha256(url) + ".mhtml";
 }
 
-function runPyScript(bucket, data, dst_path) {
+function runPyScript(data, dst_path) {
   $.ajax({
     type: 'GET',
     url: 'http://localhost:5000/upload',
     dataType: 'jsonp',
     async: false,
-    data: { bucket: bucket, data: data, dst_path: dst_path }
+    data: { data: data, dst_path: dst_path }
   }).fail(function(jqXHR, status, error){ 
     console.log(jqXHR, status, error);
   })

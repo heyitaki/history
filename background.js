@@ -11,11 +11,12 @@ function saveCurrentUrl() {
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
     if (tabs.length > 0) {
       var url = tabs[0].url;
-      chrome.storage.sync.get({urlList:[]}, function(data) {
-        urlList = data.urlList;
-        if (urlList.indexOf(url) === -1) {
-          urlList.push(url);
-          chrome.storage.sync.set({urlList:urlList});
+      var title = tabs[0].title;
+      chrome.storage.sync.get({urlToTitleDict:{}}, function(data) {
+        urlToTitleDict = data.urlToTitleDict;
+        if (!(url in urlToTitleDict)) {
+          urlToTitleDict[url] = title;
+          chrome.storage.sync.set({urlToTitleDict:urlToTitleDict});
         }
       });
     }
@@ -31,12 +32,21 @@ chrome.contextMenus.create({
 
 function saveEntity(data) {
   entity = data.selectionText;
-  console.log('saving ' + entity);
-  chrome.storage.sync.get({entityList:[]}, function(data) {
-    entityList = data.entityList;
-    if (entityList.indexOf(entity) === -1) {
-      entityList.push(entity);
-      chrome.storage.sync.set({entityList:entityList});
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+    if (tabs.length > 0) {
+      var tab = tabs[0];
+      chrome.storage.sync.get({urlToEntityDict:{}}, function(data) {
+        urlToEntityDict = data.urlToEntityDict;
+        if (!(tab.url in urlToEntityDict)) {
+          urlToEntityDict[tab.url] = [entity];
+        } else if (urlToEntityDict[tab.url].indexOf(entity) < 0) {
+          entityList = urlToEntityDict[tab.url];
+          entityList.push(entity);
+          urlToEntityDict[tab.url] = entityList;
+        }
+
+        chrome.storage.sync.set({urlToEntityDict:urlToEntityDict});
+      });
     }
   });        
 }
