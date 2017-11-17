@@ -3,13 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(command);
     switch (command) {
       case 'save':
-        savePage();
+        //savePage();
         saveCurrentUrl();
     }
   });
-
-  loadUrls();
-  loadEntities();  
 
   // Remove scrollbar
   var styleElement = document.createElement('style');
@@ -44,9 +41,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var accordion = new Accordion($('.accordion'), false);
   });
 
+  // Populate menu
+  loadUrls();
+  loadEntities();  
+
   // Copyright
   var year = new Date().getFullYear();
   $("#copyright").html("Copyright &copy; " + year + " Archer International Corporation");
+
+  // Clear history
+  $("#clear").click(clearHistory);
 });
 
 //===== SAVE PAGE =====
@@ -71,7 +75,7 @@ function saveCurrentUrl() {
         if (Object.keys(urlToTitleDict).indexOf(tab.url) < 0) {
           urlToTitleDict[tab.url] = tab.title;
           chrome.storage.sync.set({urlToTitleDict:urlToTitleDict});
-
+          writeUrlToDom(tab.url);
         }
       });
     }
@@ -148,6 +152,9 @@ function writeEntityToDom(url, entities) {
 }
 
 //===== SETTINGS =====
-function clearElement(id) {
-  $(id).html("");
+function clearHistory() {
+  clearElement("#savedUrls");
+  clearElement("#savedEntities");
+  chrome.storage.sync.remove("urlToTitleDict");
+  chrome.storage.sync.remove("urlToEntityDict");
 }

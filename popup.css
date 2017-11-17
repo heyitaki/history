@@ -16,13 +16,13 @@ ul {
 }
 
 a {
-  color: #b63b4d;
+  color: #B63B4D;
   text-decoration: none;
 }
 
 .accordion {
   width: 100%;
-  background: #FFF;
+  background: #FFFFFF;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
@@ -35,11 +35,15 @@ a {
   color: #4D4D4D;
   font-size: 14px;
   font-weight: 700;
-  border-bottom: 1px solid #CCC;
+  border-bottom: 1px solid #CCCCCC;
   position: relative;
   -webkit-transition: all 0.4s linear;
   -o-transition: all 0.4s linear;
   transition: all 0.4s linear;
+  -webkit-user-select: none;       
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none; 
 }
 
 .accordion li:last-child .link {
@@ -51,7 +55,7 @@ a {
   top: 13px;
   left: 12px;
   font-size: 18px;
-  color: #595959;
+  color: #4D4D4D;
   -webkit-transition: all 0.4s linear;
   -o-transition: all 0.4s linear;
   transition: all 0.4s linear;
@@ -64,11 +68,11 @@ a {
 }
 
 .accordion li.open .menu-header {
-  color: #b63b4d;
+  color: #B63B4D;
 }
 
 .accordion li.open i {
-  color: #b63b4d;
+  color: #B63B4D;
 }
 .accordion li.open i.fa-chevron-down {
   -webkit-transform: rotate(180deg);
@@ -81,7 +85,7 @@ a {
 
 .submenu {
   display: none;
-  background: #595959;
+  background: #4D4D4D;
   font-size: 14px;
 }
 
@@ -96,7 +100,7 @@ a {
 }
 
 .submenu li:hover {
-  background: #b63b4d;
+  background: #B63B4D;
   color: #FFF;
 }
 
@@ -108,12 +112,16 @@ a {
 
 .submenu .urlcaption {
   font-size: 12px;
-  color: #c4c4c4;
+  color: #B4B4B4;
 }
 
 #copyright {
   font-weight: 600;
   color: #4D4D4D;
   float: right;
-  padding: 5px 5px 5px 5px;
+  padding: 7px 7px 5px 7px;
+  -webkit-user-select: none;       
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none; 
 }

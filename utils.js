@@ -37,3 +37,7 @@ function runPyScript(data, dst_path) {
 function callback(result) {
   console.log('Server response: ' + result);
 }
+
+function clearElement(id) {
+  $(id).html("");
+}

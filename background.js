@@ -2,7 +2,7 @@
 chrome.commands.onCommand.addListener(function(command) {
   switch (command) {
     case 'save':
-      savePage();
+      //savePage();
       saveCurrentUrl();
   }
 });
