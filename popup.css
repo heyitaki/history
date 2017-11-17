@@ -28,7 +28,7 @@ a {
   border-radius: 2px;
 }
 
-.accordion .link {
+.accordion .menu-header {
   cursor: pointer;
   display: block;
   padding: 15px 15px 15px 42px;
@@ -63,7 +63,7 @@ a {
   font-size: 16px;
 }
 
-.accordion li.open .link {
+.accordion li.open .menu-header {
   color: #b63b4d;
 }
 
@@ -109,4 +109,11 @@ a {
 .submenu .urlcaption {
   font-size: 12px;
   color: #c4c4c4;
+}
+
+#copyright {
+  font-weight: 600;
+  color: #4D4D4D;
+  float: right;
+  padding: 5px 5px 5px 5px;
 }
