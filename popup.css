@@ -7,7 +7,7 @@
 }
 
 body {
-  min-width: 410px;
+  width: 410px;
   font-family: Arial, Verdana, 'Open Sans', Helvetica, Sans-serif, Tahoma;
 }
 
@@ -92,27 +92,45 @@ a {
 .submenu li {
   border-bottom: 1px solid #434343;
   font-family: Tahoma;
-  padding: 12px;
-  padding-left: 42px;
-  -webkit-transition: all 0.25s ease;
-  -o-transition: all 0.25s ease;
-  transition: all 0.25s ease;
+  padding: 12px 16px 12px 42px;
+  position: relative;
 }
 
 .submenu li:hover {
   background: #B63B4D;
-  color: #FFF;
+  color: #FFFFFF;
+}
+
+.submenu li::after {
+  content: "";
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(77, 77, 77, 0), rgba(77, 77, 77, 1) 50%);
+}
+
+.submenu li:hover::after {
+  content: "";
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(182, 59, 77, 0), rgba(182, 59, 77, 1) 50%);
 }
 
 .submenu a {
   display: block;
   text-decoration: none;
-  color: #FFF;
+  color: #FFFFFF;
 }
 
 .submenu .urlcaption {
   font-size: 12px;
   color: #B4B4B4;
+  overflow: hidden;
 }
 
 #copyright {
