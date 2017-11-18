@@ -1,12 +1,11 @@
 const reader = new window.FileReader();
 
 function savePage() {
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
     if (tabs.length > 0) {
-      var tab = tabs[0];
-      chrome.pageCapture.saveAsMHTML({tabId: tab.id}, function(data) {
-        console.log(data);
-        var filename = constructFileName(tab.url);
+      const tab = tabs[0];
+      chrome.pageCapture.saveAsMHTML({tabId: tab.id}, (data) => {
+        const filename = constructFileName(tab.url);
         reader.readAsText(data);
       });
     }

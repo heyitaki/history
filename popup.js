@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  chrome.commands.onCommand.addListener(function(command) {
+  chrome.commands.onCommand.addListener((command) => {
     console.log(command);
     switch (command) {
       case 'save':
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Remove scrollbar
-  var styleElement = document.createElement('style');
+  const styleElement = document.createElement('style');
   styleElement.id = 'remove-scroll-style';
   styleElement.textContent =
       'html::-webkit-scrollbar{display:none !important}' +
@@ -17,16 +17,16 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementsByTagName('body')[0].appendChild(styleElement);
 
   // Accordion menu
-  $(function() {
-    var Accordion = function(el, multiple) {
+  $(() => {
+    function Accordion(el, multiple) {
       this.el = el || {};
       this.multiple = multiple || false;
-      var headers = this.el.find('.menu-header');
+      const headers = this.el.find('.menu-header');
       headers.on('click', {el: this.el, multiple: this.multiple}, this.dropdown);
     };
 
     Accordion.prototype.dropdown = function(e) {
-      var $el = e.data.el,
+      const $el = e.data.el,
         $this = $(this),
         $next = $this.next();
 
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
       };
     } 
 
-    var accordion = new Accordion($('.accordion'), false);
+    const accordion = new Accordion($('.accordion'), false);
   });
 
   // Populate menu
@@ -46,8 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
   loadEntities();  
 
   // Copyright
-  var year = new Date().getFullYear();
-  $("#copyright").html("Copyright &copy; " + year + " Archer International Corporation");
+  $("#copyright").html("Copyright &copy; " + new Date().getFullYear() + " Archer International Corporation");
 
   // Clear history
   $("#clear").click(clearHistory);
@@ -55,11 +54,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //===== SAVE PAGE =====
 function loadUrls() {
-  chrome.storage.sync.get({urlToTitleDict:{}}, function(data) {
-    var urlToTitleDict = data.urlToTitleDict;
-    var dictKeys = Object.keys(urlToTitleDict);
+  chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
+    const urlToTitleDict = data.urlToTitleDict;
+    const dictKeys = Object.keys(urlToTitleDict);
     if (dictKeys.length > 0) {
-      for (var i = Math.max(0, dictKeys.length-1); i >= Math.max(0, dictKeys.length-5); i--) {
+      for (let i = Math.max(0, dictKeys.length-1); i >= Math.max(0, dictKeys.length-5); i--) {
         writeUrlToDom(dictKeys[i], urlToTitleDict[dictKeys[i]]);
       } 
     }
@@ -67,26 +66,29 @@ function loadUrls() {
 }
 
 function saveCurrentUrl() {
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
     if (tabs.length > 0) {
-      var tab = tabs[0];
-      chrome.storage.sync.get({urlToTitleDict:{}}, function(data) {
-        var urlToTitleDict = data.urlToTitleDict;
+      const tab = tabs[0];
+      chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
+        const urlToTitleDict = data.urlToTitleDict;
         if (Object.keys(urlToTitleDict).indexOf(tab.url) < 0) {
           urlToTitleDict[tab.url] = tab.title;
           chrome.storage.sync.set({urlToTitleDict:urlToTitleDict});
-          writeUrlToDom(tab.url);
+          writeUrlToDom(tab.url, tab.favIconUrl, tab.title);
         }
       });
     }
   });
 }
 
-function writeUrlToDom(url, title) {
-  var titleElement = document.createElement('a');
+function writeUrlToDom(url, iconUrl, title) {
+  const favIcon = document.createElement('i');
+  favIcon.src = iconUrl;
+
+  const titleElement = document.createElement('a');
   titleElement.text = title;
 
-  var urlElement = document.createElement('a');
+  const urlElement = document.createElement('a');
   urlElement.className = 'urlcaption';
   urlElement.text = url;
   urlElement.setAttribute('href', url);
@@ -94,11 +96,11 @@ function writeUrlToDom(url, title) {
   urlElement.setAttribute('rel', 'noopener noreferrer');
 
   
-  var listEntry = document.createElement('li');
+  const listEntry = document.createElement('li');
   listEntry.appendChild(titleElement);
   listEntry.appendChild(urlElement);
 
-  var urlHash = sha256(url);
+  const urlHash = sha256(url);
   listEntry.setAttribute('id', urlHash);
   $("#" + urlHash).click(function() {
     $(this).remove();
@@ -109,9 +111,9 @@ function writeUrlToDom(url, title) {
 }
 
 function removeUrl(url) {
-  chrome.storage.sync.get({urlToEntityDict:{}}, function(data) {
-    var urlToEntityDict = data.urlToEntityDict;
-    var idx = Object.keys(urlToEntityDict).indexOf(url);
+  chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
+    const urlToEntityDict = data.urlToEntityDict;
+    const idx = Object.keys(urlToEntityDict).indexOf(url);
     if (idx >= 0) {
       urlToEntityDict[url] = undefined;
     }
@@ -122,11 +124,11 @@ function removeUrl(url) {
 
 //===== SAVE ENTITY =====
 function loadEntities() {
-  chrome.storage.sync.get({urlToEntityDict:{}}, function(data) {
-    var urlToEntityDict = data.urlToEntityDict;
-    var dictKeys = Object.keys(urlToEntityDict);
+  chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
+    const urlToEntityDict = data.urlToEntityDict;
+    const dictKeys = Object.keys(urlToEntityDict);
     if (dictKeys.length > 0) {
-      for (var i = Math.max(0, dictKeys.length-1); i >= Math.max(0, dictKeys.length-5); i--) {
+      for (let i = dictKeys.length-1; i >= Math.max(0, dictKeys.length-5); i--) {
         writeEntityToDom(dictKeys[i], urlToEntityDict[dictKeys[i]]);
       } 
     }
@@ -134,17 +136,17 @@ function loadEntities() {
 }
 
 function writeEntityToDom(url, entities) {
-  var entitiesElement = document.createElement('a');
+  const entitiesElement = document.createElement('a');
   entitiesElement.text = entities.join(', ');
 
-  var urlElement = document.createElement('a');
+  const urlElement = document.createElement('a');
   urlElement.className = 'urlcaption';
   urlElement.text = url;
   urlElement.setAttribute('href', url);
   urlElement.setAttribute('target', '_blank');
   urlElement.setAttribute('rel', 'noopener noreferrer');
 
-  var listEntry = document.createElement('li');
+  const listEntry = document.createElement('li');
   listEntry.appendChild(entitiesElement);
   listEntry.appendChild(urlElement);
 

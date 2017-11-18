@@ -1,5 +1,5 @@
 //===== PAGE SAVE =====
-chrome.commands.onCommand.addListener(function(command) {
+chrome.commands.onCommand.addListener((command) => {
   switch (command) {
     case 'save':
       //savePage();
@@ -8,12 +8,12 @@ chrome.commands.onCommand.addListener(function(command) {
 });
 
 function saveCurrentUrl() {
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
     if (tabs.length > 0) {
-      var url = tabs[0].url;
-      var title = tabs[0].title;
-      chrome.storage.sync.get({urlToTitleDict:{}}, function(data) {
-        urlToTitleDict = data.urlToTitleDict;
+      const url = tabs[0].url;
+      const title = tabs[0].title;
+      chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
+        const urlToTitleDict = data.urlToTitleDict;
         if (!(url in urlToTitleDict)) {
           urlToTitleDict[url] = title;
           chrome.storage.sync.set({urlToTitleDict:urlToTitleDict});
@@ -31,16 +31,16 @@ chrome.contextMenus.create({
 });
 
 function saveEntity(data) {
-  entity = data.selectionText;
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+  const entity = data.selectionText;
+  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
     if (tabs.length > 0) {
-      var tab = tabs[0];
-      chrome.storage.sync.get({urlToEntityDict:{}}, function(data) {
-        urlToEntityDict = data.urlToEntityDict;
+      const tab = tabs[0];
+      chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
+        const urlToEntityDict = data.urlToEntityDict;
         if (!(tab.url in urlToEntityDict)) {
           urlToEntityDict[tab.url] = [entity];
         } else if (urlToEntityDict[tab.url].indexOf(entity) < 0) {
-          entityList = urlToEntityDict[tab.url];
+          const entityList = urlToEntityDict[tab.url];
           entityList.push(entity);
           urlToEntityDict[tab.url] = entityList;
         }
