@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
   chrome.commands.onCommand.addListener((command) => {
-    console.log(command);
     switch (command) {
       case 'save':
         //savePage();
@@ -58,8 +57,8 @@ function loadUrls() {
     const urlToTitleDict = data.urlToTitleDict;
     const dictKeys = Object.keys(urlToTitleDict);
     if (dictKeys.length > 0) {
-      for (let i = Math.max(0, dictKeys.length-1); i >= Math.max(0, dictKeys.length-5); i--) {
-        writeUrlToDom(dictKeys[i], urlToTitleDict[dictKeys[i]]);
+      for (let i = dictKeys.length-1; i >= Math.max(0, dictKeys.length-5); i--) {
+        writeUrlToDom(dictKeys[i], null, urlToTitleDict[dictKeys[i]]);
       } 
     }
   });
@@ -82,7 +81,7 @@ function saveCurrentUrl() {
 }
 
 function writeUrlToDom(url, iconUrl, title) {
-  const favIcon = document.createElement('i');
+  const favIcon = document.createElement('span');
   favIcon.src = iconUrl;
 
   const titleElement = document.createElement('a');
@@ -97,6 +96,7 @@ function writeUrlToDom(url, iconUrl, title) {
 
   
   const listEntry = document.createElement('li');
+  listEntry.appendChild(favIcon);
   listEntry.appendChild(titleElement);
   listEntry.appendChild(urlElement);
 
