@@ -6,16 +6,16 @@
   "description": "This extension will save the current webpage and send it to your dashboard.",
 
   "browser_action": {
-    "default_icon": "search-icon.png",
-    "default_popup": "popup.html"
+    "default_icon": "img/search-icon.png",
+    "default_popup": "src/popup.html"
   },
 
   "background": { 
     "scripts": [
-      "jquery-3.2.1.min.js",
-      "sha256.min.js",
-      "background.js",
-      "utils.js"
+      "src/js/jquery-3.2.1.min.js",
+      "src/js/sha256.min.js",
+      "src/js/background.js",
+      "src/js/utils.js"
     ]
   },
 
