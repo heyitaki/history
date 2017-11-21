@@ -5,7 +5,9 @@ chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
     const entities = urlToEntityDict[url];
     const regex = new RegExp('\\b(' + entities.join('|') + ')\\b', 'i');
     $(document).markRegExp(regex, {
+      acrossElements: true,
       separateWordSearch: false,
+      iframes: true
     });
   }
 });

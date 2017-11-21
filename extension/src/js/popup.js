@@ -48,11 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
   $("#copyright").html("Copyright &copy; " + new Date().getFullYear() + " Archer International Corporation");
 
   // Clear history
-  $("#clear").click(clearHistory);
+  $("#clear-history").click(clearHistory);
 });
 
 //===== SAVE PAGE =====
-function loadUrls() {
+function loadUrls() { 
   chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
     const urlToTitleDict = data.urlToTitleDict;
     const dictKeys = Object.keys(urlToTitleDict);
@@ -93,7 +93,6 @@ function writeUrlToDom(url, iconUrl, title) {
   urlElement.setAttribute('href', url);
   urlElement.setAttribute('target', '_blank');
   urlElement.setAttribute('rel', 'noopener noreferrer');
-
   
   const listEntry = document.createElement('li');
   listEntry.appendChild(favIcon);

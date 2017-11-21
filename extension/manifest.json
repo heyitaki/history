@@ -33,7 +33,6 @@
   "content_scripts": [
     {
       "matches": ["*://*/*"],
-      "css": ["build/content.css"],
       "js": [
         "src/js/jquery-3.2.1.min.js", 
         "src/js/jquery.mark.es6.min.js", 
