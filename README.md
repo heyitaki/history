@@ -10,7 +10,9 @@ In order to start the Flask endpoint, navigate to the root directory of the proj
 ## Next Steps
 1. SASS
 2. Rewrite backend with node
-3. Entity highlighting
+3. ~~Entity highlighting~~
 4. User authentication
 5. Context menu -> on-selection card
 6. Babel
+7. Sort lists by recency
+8. Favicons

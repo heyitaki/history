@@ -157,10 +157,12 @@ function writeEntityToDom(url, entities) {
 
 //===== SETTINGS =====
 function clearHistory() {
-  clearElement("#savedUrls");
-  clearElement("#savedEntities");
-  chrome.storage.sync.remove("urlToTitleDict");
-  chrome.storage.sync.remove("urlToEntityDict");
+  if (window.confirm('Are you sure you want to clear your history? This will delete all current saved entities.')) {
+    clearElement("#savedUrls");
+    clearElement("#savedEntities");
+    chrome.storage.sync.remove("urlToTitleDict");
+    chrome.storage.sync.remove("urlToEntityDict");
+  }
 }
 
 function toggleHighlight() {
