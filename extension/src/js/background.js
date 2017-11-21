@@ -45,8 +45,13 @@ function saveEntity(data) {
           urlToEntityDict[tab.url] = entityList;
         }
 
-        chrome.storage.sync.set({urlToEntityDict:urlToEntityDict});
+        chrome.storage.sync.set({urlToEntityDict:urlToEntityDict}, function() {
+          chrome.tabs.executeScript(null, {
+            file: "src/js/content.js",
+            allFrames: true
+          });
+        });
       });
     }
-  });        
+  });       
 }

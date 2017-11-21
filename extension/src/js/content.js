@@ -1,15 +1,13 @@
-$(function() {
-  chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
-    const urlToEntityDict = data.urlToEntityDict;
-    const url = document.location.href;
-    if (url in urlToEntityDict) {
-      const entities = urlToEntityDict[url];
-      const regex = new RegExp('\\b(' + entities.join('|') + ')\\b', 'i');
-      $(document).markRegExp(regex, {
-        "separateWordSearch": false,
-      });
-    }
-  });
+chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
+  const urlToEntityDict = data.urlToEntityDict;
+  const url = document.location.href;
+  if (url in urlToEntityDict) {
+    const entities = urlToEntityDict[url];
+    const regex = new RegExp('\\b(' + entities.join('|') + ')\\b', 'i');
+    $(document).markRegExp(regex, {
+      separateWordSearch: false,
+    });
+  }
 });
 
 // HIGHLIGHT METHOD #2
