@@ -36,7 +36,7 @@
       "js": [
         "src/js/jquery-3.2.1.min.js", 
         "src/js/jquery.mark.es6.min.js", 
-        "src/js/content.js"
+        "src/js/add-highlight.js"
       ],
       "run_at": "document_end"
     }

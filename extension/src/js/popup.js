@@ -44,11 +44,14 @@ document.addEventListener('DOMContentLoaded', function() {
   loadUrls();
   loadEntities();  
 
-  // Copyright
-  $("#copyright").html("Copyright &copy; " + new Date().getFullYear() + " Archer International Corporation");
+  // Toggle entity highlighting
+  $("#toggle-highlight").click(toggleHighlight);
 
   // Clear history
   $("#clear-history").click(clearHistory);
+
+  // Copyright
+  $("#copyright").html("Copyright &copy; " + new Date().getFullYear() + " Archer International Corporation");
 });
 
 //===== SAVE PAGE =====
@@ -158,4 +161,24 @@ function clearHistory() {
   clearElement("#savedEntities");
   chrome.storage.sync.remove("urlToTitleDict");
   chrome.storage.sync.remove("urlToEntityDict");
+}
+
+function toggleHighlight() {
+  // TODO: 3 storage calls to add highlight, check if only 2 necessary
+  chrome.storage.sync.get({entityHighlighting:false}, (data) => {
+    const entityHighlighting = !data.entityHighlighting;
+    chrome.storage.sync.set({entityHighlighting:entityHighlighting}, () => {
+      if (entityHighlighting) {
+        chrome.tabs.executeScript(null, {
+          file: "src/js/add-highlight.js",
+          allFrames: true
+        });
+      } else {
+        chrome.tabs.executeScript(null, {
+          file: "src/js/rm-highlight.js",
+          allFrames: true
+        });
+      }
+    });
+  });
 }

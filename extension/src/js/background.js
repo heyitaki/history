@@ -45,9 +45,9 @@ function saveEntity(data) {
           urlToEntityDict[tab.url] = entityList;
         }
 
-        chrome.storage.sync.set({urlToEntityDict:urlToEntityDict}, function() {
+        chrome.storage.sync.set({urlToEntityDict:urlToEntityDict}, () => {
           chrome.tabs.executeScript(null, {
-            file: "src/js/content.js",
+            file: "src/js/add-highlight.js",
             allFrames: true
           });
         });
