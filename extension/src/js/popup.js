@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     switch (command) {
       case 'save':
         //savePage();
-        saveCurrentUrl();
+        saveCurrentUrl(() => {
+          clearElement('#savedUrls');
+          loadUrls();
+        });
     }
   });
 
@@ -63,22 +66,6 @@ function loadUrls() {
       for (let i = dictKeys.length-1; i >= Math.max(0, dictKeys.length-5); i--) {
         writeUrlToDom(dictKeys[i], null, urlToTitleDict[dictKeys[i]]);
       } 
-    }
-  });
-}
-
-function saveCurrentUrl() {
-  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-    if (tabs.length > 0) {
-      const tab = tabs[0];
-      chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
-        const urlToTitleDict = data.urlToTitleDict;
-        if (Object.keys(urlToTitleDict).indexOf(tab.url) < 0) {
-          urlToTitleDict[tab.url] = tab.title;
-          chrome.storage.sync.set({urlToTitleDict:urlToTitleDict});
-          writeUrlToDom(tab.url, tab.favIconUrl, tab.title);
-        }
-      });
     }
   });
 }

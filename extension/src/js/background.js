@@ -7,22 +7,6 @@ chrome.commands.onCommand.addListener((command) => {
   }
 });
 
-function saveCurrentUrl() {
-  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-    if (tabs.length > 0) {
-      const url = tabs[0].url;
-      const title = tabs[0].title;
-      chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
-        const urlToTitleDict = data.urlToTitleDict;
-        if (!(url in urlToTitleDict)) {
-          urlToTitleDict[url] = title;
-          chrome.storage.sync.set({urlToTitleDict:urlToTitleDict});
-        }
-      });
-    }
-  });
-}
-
 //===== ENTITY SELECTION =====
 chrome.contextMenus.create({
   title: "Save '%s' as entity", 

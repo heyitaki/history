@@ -1,4 +1,23 @@
+// ===== PAGE SAVE =====
 const reader = new window.FileReader();
+
+function saveCurrentUrl(callback) {
+  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+    if (tabs.length > 0) {
+      const url = tabs[0].url;
+      const title = tabs[0].title;
+      chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
+        const urlToTitleDict = data.urlToTitleDict;
+        if (!(url in urlToTitleDict)) {
+          urlToTitleDict[url] = title;
+          chrome.storage.sync.set({urlToTitleDict:urlToTitleDict}, () => {
+            callback();
+          });
+        }
+      });
+    }
+  });
+}
 
 function savePage() {
   chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
@@ -33,10 +52,11 @@ function runPyScript(data, dst_path) {
   })
 }
 
-function callback(result) {
-  console.log('Server response: ' + result);
-}
+// function callback(result) {
+//   console.log('Server response: ' + result);
+// }
 
+// ===== SETTINGS =====
 function clearElement(id) {
   $(id).html("");
 }
