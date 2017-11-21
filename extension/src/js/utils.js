@@ -15,6 +15,17 @@ function saveCurrentUrl(callback) {
           });
         }
       });
+
+      chrome.storage.sync.get({recentPagesList:[]}, (data) => {
+        const recentPagesList = data.recentPagesList;
+        const urlIdx = recentPagesList.indexOf(url);
+        if (urlIdx >= 0) {
+          recentPagesList.splice(urlIdx, 1);
+        }
+
+        recentPagesList.push(url);
+        chrome.storage.sync.set({recentPagesList:recentPagesList});
+      });
     }
   });
 }

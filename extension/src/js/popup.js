@@ -59,14 +59,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //===== SAVE PAGE =====
 function loadUrls() { 
-  chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
-    const urlToTitleDict = data.urlToTitleDict;
-    const dictKeys = Object.keys(urlToTitleDict);
-    if (dictKeys.length > 0) {
-      for (let i = dictKeys.length-1; i >= Math.max(0, dictKeys.length-5); i--) {
-        writeUrlToDom(dictKeys[i], null, urlToTitleDict[dictKeys[i]]);
+  chrome.storage.sync.get({recentPagesList:[]}, (data) => {
+    const recentPagesList = data.recentPagesList;
+    chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
+      const urlToTitleDict = data.urlToTitleDict;
+      for (let i = recentPagesList.length-1; i >= Math.max(0, recentPagesList.length-5); i--) {
+        writeUrlToDom(recentPagesList[i], null, urlToTitleDict[recentPagesList[i]]);
       } 
-    }
+    });
   });
 }
 
@@ -149,6 +149,8 @@ function clearHistory() {
     clearElement("#savedEntities");
     chrome.storage.sync.remove("urlToTitleDict");
     chrome.storage.sync.remove("urlToEntityDict");
+    chrome.storage.sync.remove("recentPagesList");
+    chrome.storage.sync.remove("recentEntitiesList");
   }
 }
 
