@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
       case 'save':
         //savePage();
         saveCurrentUrl(() => {
-          console.log('callback started');
           clearElement('#savedUrls');
           loadUrls();
         });
@@ -114,14 +113,14 @@ function removeUrl(url) {
 
 //===== SAVE ENTITY =====
 function loadEntities() {
-  chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
-    const urlToEntityDict = data.urlToEntityDict;
-    const dictKeys = Object.keys(urlToEntityDict);
-    if (dictKeys.length > 0) {
-      for (let i = dictKeys.length-1; i >= Math.max(0, dictKeys.length-5); i--) {
-        writeEntityToDom(dictKeys[i], urlToEntityDict[dictKeys[i]]);
+  chrome.storage.sync.get({recentEntitiesList:[]}, (data) => {
+    const recentEntitiesList = data.recentEntitiesList;
+    chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
+      const urlToEntityDict = data.urlToEntityDict;
+      for (let i = recentEntitiesList.length-1; i >= Math.max(0, recentEntitiesList.length-5); i--) {
+        writeEntityToDom(recentEntitiesList[i], urlToEntityDict[recentEntitiesList[i]]);
       } 
-    }
+    });
   });
 }
 

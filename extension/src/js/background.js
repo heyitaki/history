@@ -16,10 +16,9 @@ chrome.contextMenus.create({
 
 function saveEntity(data) {
   const entity = data.selectionText;
-  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-    if (tabs.length > 0) {
-      const tab = tabs[0];
-      chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
+  getTabAsync().then((tab) => {
+    return Promise.all([
+      getDataAsync({urlToEntityDict:{}}, (data) => {
         const urlToEntityDict = data.urlToEntityDict;
         if (!(tab.url in urlToEntityDict)) {
           urlToEntityDict[tab.url] = [entity];
@@ -29,13 +28,23 @@ function saveEntity(data) {
           urlToEntityDict[tab.url] = entityList;
         }
 
-        chrome.storage.sync.set({urlToEntityDict:urlToEntityDict}, () => {
-          chrome.tabs.executeScript(null, {
-            file: "src/js/add-highlight.js",
-            allFrames: true
-          });
-        });
-      });
-    }
-  });       
+        return setDataAsync({urlToEntityDict:urlToEntityDict});
+      }),
+      getDataAsync({recentEntitiesList:[]}, (data) => {
+        const recentEntitiesList = data.recentEntitiesList;
+        const urlIdx = recentEntitiesList.indexOf(tab.url);
+        if (urlIdx >= 0) {
+          recentEntitiesList.splice(urlIdx, 1);
+        }
+
+        recentEntitiesList.push(tab.url);
+        return setDataAsync({recentEntitiesList:recentEntitiesList});
+      })
+    ]);
+  }).then((value) => {
+    chrome.tabs.executeScript(null, {
+      file: "src/js/add-highlight.js",
+      allFrames: true
+    });
+  });
 }

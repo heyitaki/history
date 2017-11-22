@@ -2,50 +2,38 @@
 const reader = new window.FileReader();
 
 function saveCurrentUrl(callback) {
-  console.log('saving current url');
-  console.log('callback', callback); 
-  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-    if (tabs.length > 0) {
-      const url = tabs[0].url;
-      const title = tabs[0].title;
+  getTabAsync().then((tab) => {
+    return Promise.all([
+      getDataAsync({urlToTitleDict:{}}, (data) => {
+        const urlToTitleDict = data.urlToTitleDict;
+        if (!(tab.url in urlToTitleDict)) {
+          urlToTitleDict[tab.url] = tab.title;
+        }
 
-      Promise.all([
-        getDataAsync({urlToTitleDict:{}}, (data) => {
-          console.log('pages data', data);
-          const urlToTitleDict = data.urlToTitleDict;
-          if (!(url in urlToTitleDict)) {
-            urlToTitleDict[url] = title;
-          }
+        return setDataAsync({urlToTitleDict:urlToTitleDict});
+      }), 
+      getDataAsync({recentPagesList:[]}, (data) => {
+        const recentPagesList = data.recentPagesList;
+        const urlIdx = recentPagesList.indexOf(tab.url);
+        if (urlIdx >= 0) {
+          recentPagesList.splice(urlIdx, 1);
+        }
 
-          return setDataAsync({urlToTitleDict:urlToTitleDict});
-        }), 
-        getDataAsync({recentPagesList:[]}, (data) => {
-          console.log('recent data', data);
-          const recentPagesList = data.recentPagesList;
-          const urlIdx = recentPagesList.indexOf(url);
-          if (urlIdx >= 0) {
-            recentPagesList.splice(urlIdx, 1);
-          }
-
-          recentPagesList.push(url);
-          return setDataAsync({recentPagesList:recentPagesList});
-        })
-      ]).then((value) => {
-        callback();
-      });
-    }
+        recentPagesList.push(tab.url);
+        return setDataAsync({recentPagesList:recentPagesList});
+      })
+    ]);
+  }).then((value) => {
+    callback();
   });
 }
 
 function savePage() {
-  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-    if (tabs.length > 0) {
-      const tab = tabs[0];
-      chrome.pageCapture.saveAsMHTML({tabId: tab.id}, (data) => {
-        const filename = constructFileName(tab.url);
-        reader.readAsText(data);
-      });
-    }
+  getTabAsync().then((tab) => {
+    chrome.pageCapture.saveAsMHTML({tabId: tab.id}, (data) => {
+      const filename = constructFileName(tab.url);
+      reader.readAsText(data);
+    });
   });
 }
 
@@ -79,10 +67,10 @@ function clearElement(id) {
   $(id).html("");
 }
 
-// ===== ASYNC OPS =====
+// ===== ASYNC =====
 function getDataAsync(getObj, callback) {
-  return new Promise(function(resolve, reject) {
-    chrome.storage.sync.get(getObj, function(data) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(getObj, (data) => {
       const err = chrome.runtime.lastError;
       if (err) { return reject(err); }
       return resolve(callback(data));
@@ -91,11 +79,27 @@ function getDataAsync(getObj, callback) {
 }
 
 function setDataAsync(setObj) {
-  return new Promise(function(resolve, reject) {
-    chrome.storage.sync.set(setObj, function() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.set(setObj, () => {
       const err = chrome.runtime.lastError;
       if (err) { return reject(err); }
       return resolve('Success!');
     });
   });
+}
+
+function getTabAsync() {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+      const err = chrome.runtime.lastError;
+      if (err) { return reject(err); }
+      if (tabs.length > 0) { return resolve(tabs[0]); }
+      return reject('No active tab to retrieve.');
+    });
+  });
+}
+
+// ===== UTILS =====
+function w(a,b,c,d) {
+  console.log(a,b,c,d);
 }
