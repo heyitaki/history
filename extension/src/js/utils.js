@@ -2,29 +2,36 @@
 const reader = new window.FileReader();
 
 function saveCurrentUrl(callback) {
+  console.log('saving current url');
+  console.log('callback', callback); 
   chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
     if (tabs.length > 0) {
       const url = tabs[0].url;
       const title = tabs[0].title;
-      chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
-        const urlToTitleDict = data.urlToTitleDict;
-        if (!(url in urlToTitleDict)) {
-          urlToTitleDict[url] = title;
-          chrome.storage.sync.set({urlToTitleDict:urlToTitleDict}, () => {
-            callback();
-          });
-        }
-      });
 
-      chrome.storage.sync.get({recentPagesList:[]}, (data) => {
-        const recentPagesList = data.recentPagesList;
-        const urlIdx = recentPagesList.indexOf(url);
-        if (urlIdx >= 0) {
-          recentPagesList.splice(urlIdx, 1);
-        }
+      Promise.all([
+        getDataAsync({urlToTitleDict:{}}, (data) => {
+          console.log('pages data', data);
+          const urlToTitleDict = data.urlToTitleDict;
+          if (!(url in urlToTitleDict)) {
+            urlToTitleDict[url] = title;
+          }
 
-        recentPagesList.push(url);
-        chrome.storage.sync.set({recentPagesList:recentPagesList});
+          return setDataAsync({urlToTitleDict:urlToTitleDict});
+        }), 
+        getDataAsync({recentPagesList:[]}, (data) => {
+          console.log('recent data', data);
+          const recentPagesList = data.recentPagesList;
+          const urlIdx = recentPagesList.indexOf(url);
+          if (urlIdx >= 0) {
+            recentPagesList.splice(urlIdx, 1);
+          }
+
+          recentPagesList.push(url);
+          return setDataAsync({recentPagesList:recentPagesList});
+        })
+      ]).then((value) => {
+        callback();
       });
     }
   });
@@ -58,9 +65,9 @@ function runPyScript(data, dst_path) {
     dataType: 'jsonp',
     async: false,
     data: { data: data, dst_path: dst_path }
-  }).fail(function(jqXHR, status, error){ 
+  }).fail((jqXHR, status, error) => { 
     console.log(jqXHR, status, error);
-  })
+  });
 }
 
 // function callback(result) {
@@ -70,4 +77,25 @@ function runPyScript(data, dst_path) {
 // ===== SETTINGS =====
 function clearElement(id) {
   $(id).html("");
+}
+
+// ===== ASYNC OPS =====
+function getDataAsync(getObj, callback) {
+  return new Promise(function(resolve, reject) {
+    chrome.storage.sync.get(getObj, function(data) {
+      const err = chrome.runtime.lastError;
+      if (err) { return reject(err); }
+      return resolve(callback(data));
+    });
+  });
+}
+
+function setDataAsync(setObj) {
+  return new Promise(function(resolve, reject) {
+    chrome.storage.sync.set(setObj, function() {
+      const err = chrome.runtime.lastError;
+      if (err) { return reject(err); }
+      return resolve('Success!');
+    });
+  });
 }

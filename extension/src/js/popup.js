@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
       case 'save':
         //savePage();
         saveCurrentUrl(() => {
+          console.log('callback started');
           clearElement('#savedUrls');
           loadUrls();
         });
