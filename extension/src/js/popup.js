@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
       case 'save':
         //savePage();
         saveCurrentUrl(() => {
-          clearElement('#savedUrls');
+          clearElement('#savedPages');
           loadUrls();
         });
     }
@@ -48,27 +48,31 @@ document.addEventListener('DOMContentLoaded', function() {
   loadEntities();  
 
   // Toggle entity highlighting
-  $("#toggle-highlight").click(toggleHighlight);
+  $("#toggleHighlight").click(toggleHighlight);
 
   // Clear history
-  $("#clear-history").click(clearHistory);
+  $("#clearHistory").click(clearHistory);
 
   // Copyright
   $("#copyright").html(`Copyright &copy; ${new Date().getFullYear()} Archer International Corporation`);
 });
 
-//===== SAVE ENTITY =====
+// ===== SAVE ENTITY =====
 function loadEntities() {
   Promise.all([
     getDataAsync({recentEntitiesList:[]}, (data) => {
-      return data;
+      return data.recentEntitiesList;
     }),
     getDataAsync({urlToEntityDict:{}}, (data) => {
-      return data;
+      return data.urlToEntityDict;
     })
   ]).then((data) => {
-    const recentEntitiesList = data[0].recentEntitiesList;
-    const urlToEntityDict = data[1].urlToEntityDict;
+    const [recentEntitiesList, urlToEntityDict] = data;
+    if (recentEntitiesList.length === 0) {
+      writePlaceholderToDom("No saved entities yet!", "savedEntities");
+      return "Wrote placeholder to DOM."
+    }
+
     for (let i = recentEntitiesList.length-1; i >= Math.max(0, recentEntitiesList.length-5); i--) {
       writeEntityToDom(recentEntitiesList[i], urlToEntityDict[recentEntitiesList[i]]);
     }
@@ -78,35 +82,28 @@ function loadEntities() {
 }
 
 function writeEntityToDom(url, entities) {
-  const entitiesElement = document.createElement('a');
-  entitiesElement.text = entities.join(', ');
-
-  const urlElement = document.createElement('a');
-  urlElement.className = 'urlcaption';
-  urlElement.text = url;
-  urlElement.setAttribute('href', url);
-  urlElement.setAttribute('target', '_blank');
-  urlElement.setAttribute('rel', 'noopener noreferrer');
-
-  const listEntry = document.createElement('li');
-  listEntry.appendChild(entitiesElement);
-  listEntry.appendChild(urlElement);
-
-  $("#savedEntities").append(listEntry);
+  const entitiesElement = createTextElement(entities.join(', '));
+  const urlElement = createUrlElement(url);
+  const listItem = createLiElement(entitiesElement, urlElement);
+  $("#savedEntities").append(listItem);
 }
 
-//===== SAVE PAGE =====
+// ===== SAVE PAGE =====
 function loadUrls() { 
   Promise.all([
     getDataAsync({recentPagesList:[]}, (data) => {
-      return data;
+      return data.recentPagesList;
     }),
     getDataAsync({urlToTitleDict:{}}, (data) => {
-      return data;
+      return data.urlToTitleDict;
     })
   ]).then((data) => {
-    const recentPagesList = data[0].recentPagesList;
-    const urlToTitleDict = data[1].urlToTitleDict;
+    const [recentPagesList, urlToTitleDict] = data;
+    if (recentPagesList.length === 0) {
+      writePlaceholderToDom("No saved pages yet!", "savedPages");
+      return "Wrote placeholder to DOM."
+    }
+
     for (let i = recentPagesList.length-1; i >= Math.max(0, recentPagesList.length-5); i--) {
       writeUrlToDom(recentPagesList[i], urlToTitleDict[recentPagesList[i]]);
     }
@@ -116,32 +113,25 @@ function loadUrls() {
 }
 
 function writeUrlToDom(url, title) {
-  const titleElement = document.createElement('a');
-  titleElement.text = title;
-
-  const urlElement = document.createElement('a');
-  urlElement.className = 'urlcaption';
-  urlElement.text = url;
-  urlElement.setAttribute('href', url);
-  urlElement.setAttribute('target', '_blank');
-  urlElement.setAttribute('rel', 'noopener noreferrer');
-  
-  const listEntry = document.createElement('li');
-  listEntry.appendChild(titleElement);
-  listEntry.appendChild(urlElement);
-
-  $("#savedUrls").append(listEntry);
+  const titleElement = createTextElement(title);
+  const urlElement = createUrlElement(url);
+  const listItem = createLiElement(titleElement, urlElement);
+  $("#savedPages").append(listItem);
 }
 
-//===== SETTINGS =====
+// ===== SETTINGS =====
 function clearHistory() {
   if (window.confirm('Are you sure you want to clear your history? This will delete all current saved entities.')) {
-    clearElement("#savedUrls");
+    clearElement("#savedPages");
     clearElement("#savedEntities");
     chrome.storage.sync.remove("urlToTitleDict");
     chrome.storage.sync.remove("urlToEntityDict");
     chrome.storage.sync.remove("recentPagesList");
     chrome.storage.sync.remove("recentEntitiesList");
+    writePlaceholderToDom("No saved pages yet!", "savedPages");
+    writePlaceholderToDom("No saved entities yet!", "savedEntities");
+    toggleHighlight();
+    toggleHighlight();
   }
 }
 
@@ -163,4 +153,36 @@ function toggleHighlight() {
       }
     });
   });
+}
+
+// ===== HELPER =====
+function createTextElement(text) {
+  const textElement = document.createElement('a');
+  textElement.text = text;
+  return textElement;
+}
+
+function createUrlElement(url) {
+  const urlElement = document.createElement('a');
+  urlElement.className = 'urlcaption';
+  urlElement.text = url;
+  urlElement.setAttribute('href', url);
+  urlElement.setAttribute('target', '_blank');
+  urlElement.setAttribute('rel', 'noopener noreferrer');
+  return urlElement;
+}
+
+function createLiElement() {
+  const listItem = document.createElement('li'); 
+  for (let arg of arguments) {
+    listItem.append(arg);
+  }
+
+  return listItem;
+}
+
+function writePlaceholderToDom(placeholderText, dstElementId) {
+  const textElement = createTextElement(placeholderText);
+  const listItem = createLiElement(textElement);
+  $(`#${dstElementId}`).append(listItem);
 }

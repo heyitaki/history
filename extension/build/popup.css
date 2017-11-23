@@ -121,6 +121,10 @@ a {
   background: linear-gradient(to right, rgba(182, 59, 77, 0), rgba(182, 59, 77, 1) 50%);
 }
 
+.submenu li:last-child {
+  border-bottom: 0;
+}
+
 .submenu a {
   display: block;
   text-decoration: none;
