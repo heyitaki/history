@@ -46,5 +46,5 @@ function saveEntity(data) {
       file: "src/js/add-highlight.js",
       allFrames: true
     });
-  });
+  }).catch(console.log.bind(console));
 }

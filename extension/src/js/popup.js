@@ -54,74 +54,27 @@ document.addEventListener('DOMContentLoaded', function() {
   $("#clear-history").click(clearHistory);
 
   // Copyright
-  $("#copyright").html("Copyright &copy; " + new Date().getFullYear() + " Archer International Corporation");
+  $("#copyright").html(`Copyright &copy; ${new Date().getFullYear()} Archer International Corporation`);
 });
-
-//===== SAVE PAGE =====
-function loadUrls() { 
-  chrome.storage.sync.get({recentPagesList:[]}, (data) => {
-    const recentPagesList = data.recentPagesList;
-    chrome.storage.sync.get({urlToTitleDict:{}}, (data) => {
-      const urlToTitleDict = data.urlToTitleDict;
-      for (let i = recentPagesList.length-1; i >= Math.max(0, recentPagesList.length-5); i--) {
-        writeUrlToDom(recentPagesList[i], null, urlToTitleDict[recentPagesList[i]]);
-      } 
-    });
-  });
-}
-
-function writeUrlToDom(url, iconUrl, title) {
-  const favIcon = document.createElement('span');
-  favIcon.src = iconUrl;
-
-  const titleElement = document.createElement('a');
-  titleElement.text = title;
-
-  const urlElement = document.createElement('a');
-  urlElement.className = 'urlcaption';
-  urlElement.text = url;
-  urlElement.setAttribute('href', url);
-  urlElement.setAttribute('target', '_blank');
-  urlElement.setAttribute('rel', 'noopener noreferrer');
-  
-  const listEntry = document.createElement('li');
-  listEntry.appendChild(favIcon);
-  listEntry.appendChild(titleElement);
-  listEntry.appendChild(urlElement);
-
-  const urlHash = sha256(url);
-  listEntry.setAttribute('id', urlHash);
-  $("#" + urlHash).click(function() {
-    $(this).remove();
-    removeUrl(url);
-  });
-
-  $("#savedUrls").append(listEntry);
-}
-
-function removeUrl(url) {
-  chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
-    const urlToEntityDict = data.urlToEntityDict;
-    const idx = Object.keys(urlToEntityDict).indexOf(url);
-    if (idx >= 0) {
-      urlToEntityDict[url] = undefined;
-    }
-
-    chrome.storage.sync.set({urlToEntityDict:urlToEntityDict});
-  });
-}
 
 //===== SAVE ENTITY =====
 function loadEntities() {
-  chrome.storage.sync.get({recentEntitiesList:[]}, (data) => {
-    const recentEntitiesList = data.recentEntitiesList;
-    chrome.storage.sync.get({urlToEntityDict:{}}, (data) => {
-      const urlToEntityDict = data.urlToEntityDict;
-      for (let i = recentEntitiesList.length-1; i >= Math.max(0, recentEntitiesList.length-5); i--) {
-        writeEntityToDom(recentEntitiesList[i], urlToEntityDict[recentEntitiesList[i]]);
-      } 
-    });
-  });
+  Promise.all([
+    getDataAsync({recentEntitiesList:[]}, (data) => {
+      return data;
+    }),
+    getDataAsync({urlToEntityDict:{}}, (data) => {
+      return data;
+    })
+  ]).then((data) => {
+    const recentEntitiesList = data[0].recentEntitiesList;
+    const urlToEntityDict = data[1].urlToEntityDict;
+    for (let i = recentEntitiesList.length-1; i >= Math.max(0, recentEntitiesList.length-5); i--) {
+      writeEntityToDom(recentEntitiesList[i], urlToEntityDict[recentEntitiesList[i]]);
+    }
+
+    return `Wrote ${Math.min(5, recentEntitiesList.length)} entries to DOM.`;
+  }).catch(console.log.bind(console));
 }
 
 function writeEntityToDom(url, entities) {
@@ -140,6 +93,44 @@ function writeEntityToDom(url, entities) {
   listEntry.appendChild(urlElement);
 
   $("#savedEntities").append(listEntry);
+}
+
+//===== SAVE PAGE =====
+function loadUrls() { 
+  Promise.all([
+    getDataAsync({recentPagesList:[]}, (data) => {
+      return data;
+    }),
+    getDataAsync({urlToTitleDict:{}}, (data) => {
+      return data;
+    })
+  ]).then((data) => {
+    const recentPagesList = data[0].recentPagesList;
+    const urlToTitleDict = data[1].urlToTitleDict;
+    for (let i = recentPagesList.length-1; i >= Math.max(0, recentPagesList.length-5); i--) {
+      writeUrlToDom(recentPagesList[i], urlToTitleDict[recentPagesList[i]]);
+    }
+
+    return `Wrote ${Math.min(5, recentPagesList.length)} entries to DOM.`;
+  }).catch(console.log.bind(console));
+}
+
+function writeUrlToDom(url, title) {
+  const titleElement = document.createElement('a');
+  titleElement.text = title;
+
+  const urlElement = document.createElement('a');
+  urlElement.className = 'urlcaption';
+  urlElement.text = url;
+  urlElement.setAttribute('href', url);
+  urlElement.setAttribute('target', '_blank');
+  urlElement.setAttribute('rel', 'noopener noreferrer');
+  
+  const listEntry = document.createElement('li');
+  listEntry.appendChild(titleElement);
+  listEntry.appendChild(urlElement);
+
+  $("#savedUrls").append(listEntry);
 }
 
 //===== SETTINGS =====

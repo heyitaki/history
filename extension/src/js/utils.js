@@ -25,16 +25,15 @@ function saveCurrentUrl(callback) {
     ]);
   }).then((value) => {
     callback();
-  });
+  }).catch(console.log.bind(console));
 }
 
 function savePage() {
   getTabAsync().then((tab) => {
     chrome.pageCapture.saveAsMHTML({tabId: tab.id}, (data) => {
-      const filename = constructFileName(tab.url);
       reader.readAsText(data);
     });
-  });
+  }).catch(console.log.bind(console));
 }
 
 reader.addEventListener('loadend', (e) => {
@@ -43,7 +42,7 @@ reader.addEventListener('loadend', (e) => {
 });
 
 function constructFileName(url) {
-  return sha256(url) + ".mhtml";
+  return `${sha256(url)}.mhtml`;
 }
 
 function runPyScript(data, dst_path) {
@@ -100,6 +99,10 @@ function getTabAsync() {
 }
 
 // ===== UTILS =====
-function w(a,b,c,d) {
-  console.log(a,b,c,d);
+function w() {
+  if (console.log.apply) {
+    console.log.apply(console, arguments);
+  } else {
+    console.log(arguments);
+  }
 }
