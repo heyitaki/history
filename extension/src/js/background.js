@@ -15,7 +15,12 @@ chrome.contextMenus.create({
 });
 
 function saveEntity(data) {
-  const entity = data.selectionText;
+  let entity = data.selectionText;
+  if (!entity) {
+    return;
+  }
+
+  entity = escapeRegExpInput(entity);
   getTabAsync().then((tab) => {
     return Promise.all([
       getDataAsync({urlToEntityDict:{}}, (data) => {
@@ -28,7 +33,7 @@ function saveEntity(data) {
           urlToEntityDict[tab.url] = entityList;
         }
 
-        return setDataAsync({urlToEntityDict:urlToEntityDict});
+        return setDataAsync('urlToEntityDict', urlToEntityDict);
       }),
       getDataAsync({recentEntitiesList:[]}, (data) => {
         const recentEntitiesList = data.recentEntitiesList;
@@ -38,13 +43,12 @@ function saveEntity(data) {
         }
 
         recentEntitiesList.push(tab.url);
-        return setDataAsync({recentEntitiesList:recentEntitiesList});
+        return setDataAsync('recentEntitiesList', recentEntitiesList);
       })
     ]);
   }).then((value) => {
-    chrome.tabs.executeScript(null, {
-      file: "src/js/add-highlight.js",
-      allFrames: true
+    return injectResourcesAsync(['src/js/async-operations.js']).then(() => {
+      return executeScriptAsync('src/js/add-highlight.js');
     });
   }).catch(console.log.bind(console));
 }

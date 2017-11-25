@@ -69,7 +69,7 @@ function loadEntities() {
   ]).then((data) => {
     const [recentEntitiesList, urlToEntityDict] = data;
     if (recentEntitiesList.length === 0) {
-      writePlaceholderToDom("No saved entities yet!", "savedEntities");
+      writePlaceholderToDom("No saved entities yet!", "#savedEntities");
       return "Wrote placeholder to DOM."
     }
 
@@ -100,7 +100,7 @@ function loadUrls() {
   ]).then((data) => {
     const [recentPagesList, urlToTitleDict] = data;
     if (recentPagesList.length === 0) {
-      writePlaceholderToDom("No saved pages yet!", "savedPages");
+      writePlaceholderToDom("No saved pages yet!", "#savedPages");
       return "Wrote placeholder to DOM."
     }
 
@@ -121,43 +121,38 @@ function writeUrlToDom(url, title) {
 
 // ===== SETTINGS =====
 function clearHistory() {
-  if (window.confirm('Are you sure you want to clear your history? This will delete all current saved entities.')) {
+  if (window.confirm("Are you sure you want to clear your history? This will delete all current saved entities.")) {
     clearElement("#savedPages");
     clearElement("#savedEntities");
     chrome.storage.sync.remove("urlToTitleDict");
     chrome.storage.sync.remove("urlToEntityDict");
     chrome.storage.sync.remove("recentPagesList");
     chrome.storage.sync.remove("recentEntitiesList");
-    writePlaceholderToDom("No saved pages yet!", "savedPages");
-    writePlaceholderToDom("No saved entities yet!", "savedEntities");
-    toggleHighlight();
-    toggleHighlight();
+    writePlaceholderToDom("No saved pages yet!", "#savedPages");
+    writePlaceholderToDom("No saved entities yet!", "#savedEntities");
   }
 }
 
 function toggleHighlight() {
-  // TODO: 3 storage calls to add highlight, check if only 2 necessary
-  chrome.storage.sync.get({entityHighlighting:false}, (data) => {
-    const entityHighlighting = !data.entityHighlighting;
-    chrome.storage.sync.set({entityHighlighting:entityHighlighting}, () => {
-      if (entityHighlighting) {
-        chrome.tabs.executeScript(null, {
-          file: "src/js/add-highlight.js",
-          allFrames: true
-        });
-      } else {
-        chrome.tabs.executeScript(null, {
-          file: "src/js/rm-highlight.js",
-          allFrames: true
-        });
-      }
-    });
-  });
+  getDataAsync({entityHighlighting:false}, (data) => {
+    return !data.entityHighlighting;
+  }).then((toggledVal) => {
+    return setDataAsync('entityHighlighting', toggledVal);
+  }).then((toggledVal) => {
+    if (toggledVal) {
+      return injectResourcesAsync(['src/js/async-operations.js']).then(() => {
+        return executeScriptAsync('src/js/add-highlight.js');
+      });
+    } else {
+      return executeScriptAsync('src/js/rm-highlight.js');
+    }
+  }).catch(console.log.bind(console));
 }
 
 // ===== HELPER =====
-function createTextElement(text) {
+function createTextElement(text, unselectable=false) {
   const textElement = document.createElement('a');
+  textElement.className = unselectable ? 'unselectable' : '';
   textElement.text = text;
   return textElement;
 }
@@ -182,7 +177,11 @@ function createLiElement() {
 }
 
 function writePlaceholderToDom(placeholderText, dstElementId) {
-  const textElement = createTextElement(placeholderText);
+  const textElement = createTextElement(placeholderText, true);
   const listItem = createLiElement(textElement);
-  $(`#${dstElementId}`).append(listItem);
+  $(dstElementId).append(listItem);
+}
+
+function clearElement(elementId) {
+  $(elementId).html("");
 }

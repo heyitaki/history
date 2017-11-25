@@ -14,6 +14,8 @@
     "scripts": [
       "src/js/jquery-3.2.1.min.js",
       "src/js/sha256.min.js",
+      "src/js/async-operations.js",
+      "src/js/save-page.js",
       "src/js/utils.js",
       "src/js/background.js"
     ]
@@ -36,6 +38,7 @@
       "js": [
         "src/js/jquery-3.2.1.min.js", 
         "src/js/jquery.mark.es6.min.js", 
+        "src/js/async-operations.js",
         "src/js/add-highlight.js"
       ],
       "run_at": "document_end"
