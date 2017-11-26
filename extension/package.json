@@ -1,0 +1,28 @@
+{
+  "name": "archer-extension",
+  "version": "0.1.0",
+  "description": "Chrome extension for Flagship dashboard.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass --watch src/scss -o build/css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akshaths/archer.git"
+  },
+  "keywords": [
+    "archer",
+    "extension",
+    "flagship"
+  ],
+  "author": "Akshath Sivaprasad",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/akshaths/archer/issues"
+  },
+  "homepage": "https://github.com/akshaths/archer#readme",
+  "devDependencies": {
+    "node-sass": "^4.7.2"
+  }
+}

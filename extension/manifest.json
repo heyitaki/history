@@ -7,7 +7,7 @@
 
   "browser_action": {
     "default_icon": "img/search-icon.png",
-    "default_popup": "src/popup.html"
+    "default_popup": "build/popup.html"
   },
 
   "background": { 
