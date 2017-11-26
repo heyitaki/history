@@ -130,6 +130,7 @@ function clearHistory() {
     chrome.storage.sync.remove("recentEntitiesList");
     writePlaceholderToDom("No saved pages yet!", "#savedPages");
     writePlaceholderToDom("No saved entities yet!", "#savedEntities");
+    executeScriptAsync('src/js/rm-highlight.js');
   }
 }
 
@@ -152,7 +153,7 @@ function toggleHighlight() {
 // ===== HELPER =====
 function createTextElement(text, unselectable=false) {
   const textElement = document.createElement('a');
-  textElement.className = unselectable ? 'unselectable' : '';
+  textElement.className = unselectable ? 'title unselectable' : 'title';
   textElement.text = text;
   return textElement;
 }

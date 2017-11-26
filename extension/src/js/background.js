@@ -15,12 +15,11 @@ chrome.contextMenus.create({
 });
 
 function saveEntity(data) {
-  let entity = data.selectionText;
+  const entity = data.selectionText;
   if (!entity) {
     return;
   }
 
-  entity = escapeRegExpInput(entity);
   getTabAsync().then((tab) => {
     return Promise.all([
       getDataAsync({urlToEntityDict:{}}, (data) => {

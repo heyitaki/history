@@ -10,7 +10,7 @@ Promise.all([
   if (entityHighlighting) {
     const url = document.location.href;
     if (url in urlToEntityDict) {
-      const escapedSearchStr = urlToEntityDict[url].join('|');
+      const escapedSearchStr = urlToEntityDict[url].map(escapeRegExpInput).join('|');
       const regex = new RegExp(`\\b(${escapedSearchStr})\\b`, 'i');
       $(document).markRegExp(regex, {
         acrossElements: true,
@@ -20,3 +20,7 @@ Promise.all([
     }
   }
 }).catch(console.log.bind(console));
+
+function escapeRegExpInput(input){
+  return input.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+}

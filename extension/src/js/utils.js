@@ -6,7 +6,3 @@ function w() {
     console.log(arguments);
   }
 }
-
-function escapeRegExpInput(input){
-  return input.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
-}
