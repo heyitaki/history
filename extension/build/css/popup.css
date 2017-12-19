@@ -27,7 +27,7 @@ ul {
   list-style: none; }
 
 a {
-  color: #B63B4D;
+  color: #20AD1A;
   text-decoration: none; }
 
 .accordion {
@@ -70,16 +70,20 @@ a {
       left: auto;
       font-size: 16px; }
   .accordion li.open .menu-header {
-    color: #B63B4D;
+    color: #20AD1A;
     border-bottom: 0; }
   .accordion li.open i {
-    color: #B63B4D; }
+    color: #20AD1A; }
     .accordion li.open i.fa-chevron-down {
       -webkit-transform: rotate(180deg);
       -moz-transform: rotate(180deg);
       -ms-transform: rotate(180deg);
       -o-transform: rotate(180deg);
       transform: rotate(180deg); }
+  .accordion li.open .i-container i {
+    color: #FFFFFF; }
+  .accordion li.open .i-container:hover i {
+    color: #20AD1A; }
   .accordion li.default .submenu {
     display: block; }
 
@@ -98,13 +102,15 @@ a {
       position: absolute;
       background: linear-gradient(to right, rgba(77, 77, 77, 0), #4D4D4D 50%); }
     .submenu li:hover {
-      background: #B63B4D;
+      background: #20AD1A;
       color: #FFFFFF; }
+      .submenu li:hover .urlcaption {
+        color: #4D4D4D; }
       .submenu li:hover:after {
         content: "";
         display: block;
         position: absolute;
-        background: linear-gradient(to right, rgba(182, 59, 77, 0), #B63B4D 50%); }
+        background: linear-gradient(to right, rgba(32, 173, 26, 0), #20AD1A 50%); }
     .submenu li:last-child {
       border-bottom: 0; }
   .submenu a {
@@ -118,6 +124,28 @@ a {
     font-size: 12px;
     color: #B4B4B4;
     overflow: hidden; }
+
+.i-submenu {
+  display: none;
+  background: #4D4D4D;
+  font-size: 16px; }
+  .i-submenu li {
+    display: inline-block;
+    width: 95px;
+    height: 50px;
+    color: #FFFFFF; }
+    .i-submenu li .i-container {
+      height: inherit;
+      width: inherit;
+      text-align: center; }
+    .i-submenu li i {
+      position: relative;
+      top: initial;
+      left: initial; }
+    .i-submenu li .i-caption {
+      font-size: 10px; }
+    .i-submenu li:hover {
+      color: #20AD1A; }
 
 #settings li {
   cursor: pointer; }
