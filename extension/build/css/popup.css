@@ -27,7 +27,7 @@ ul {
   list-style: none; }
 
 a {
-  color: #20AD1A;
+  color: #0a6918;
   text-decoration: none; }
 
 .accordion {
@@ -70,10 +70,10 @@ a {
       left: auto;
       font-size: 16px; }
   .accordion li.open .menu-header {
-    color: #20AD1A;
+    color: #0a6918;
     border-bottom: 0; }
   .accordion li.open i {
-    color: #20AD1A; }
+    color: #0a6918; }
     .accordion li.open i.fa-chevron-down {
       -webkit-transform: rotate(180deg);
       -moz-transform: rotate(180deg);
@@ -81,9 +81,14 @@ a {
       -o-transform: rotate(180deg);
       transform: rotate(180deg); }
   .accordion li.open .i-container i {
+    -webkit-transition: all 0.1s linear;
+    -moz-transition: all 0.1s linear;
+    -ms-transition: all 0.1s linear;
+    -o-transition: all 0.1s linear;
+    transition: all 0.1s linear;
     color: #FFFFFF; }
   .accordion li.open .i-container:hover i {
-    color: #20AD1A; }
+    color: #0a6918; }
   .accordion li.default .submenu {
     display: block; }
 
@@ -102,15 +107,13 @@ a {
       position: absolute;
       background: linear-gradient(to right, rgba(77, 77, 77, 0), #4D4D4D 50%); }
     .submenu li:hover {
-      background: #20AD1A;
+      background: #0a6918;
       color: #FFFFFF; }
-      .submenu li:hover .urlcaption {
-        color: #4D4D4D; }
       .submenu li:hover:after {
         content: "";
         display: block;
         position: absolute;
-        background: linear-gradient(to right, rgba(32, 173, 26, 0), #20AD1A 50%); }
+        background: linear-gradient(to right, rgba(10, 105, 24, 0), #0a6918 50%); }
     .submenu li:last-child {
       border-bottom: 0; }
   .submenu a {
@@ -128,11 +131,13 @@ a {
 .i-submenu {
   display: none;
   background: #4D4D4D;
-  font-size: 16px; }
+  font-size: 16px;
+  padding: 10px 0px; }
   .i-submenu li {
     display: inline-block;
-    width: 95px;
-    height: 50px;
+    width: 90px;
+    height: 40px;
+    margin: 10px 20px 10px 20px;
     color: #FFFFFF; }
     .i-submenu li .i-container {
       height: inherit;
@@ -141,11 +146,10 @@ a {
     .i-submenu li i {
       position: relative;
       top: initial;
-      left: initial; }
+      left: initial;
+      margin-bottom: 8px; }
     .i-submenu li .i-caption {
       font-size: 10px; }
-    .i-submenu li:hover {
-      color: #20AD1A; }
 
 #settings li {
   cursor: pointer; }

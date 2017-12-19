@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (!e.data.multiple) {
         $el.find('.submenu').not($next).slideUp().parent().removeClass('open');
+        $el.find('.i-submenu').not($next).slideUp().parent().removeClass('open');
       };
     } 
 
