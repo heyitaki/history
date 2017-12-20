@@ -1,9 +1,10 @@
+$ghost: rgba(255, 255, 255, .5);
 $white: #FFFFFF;
 $silver: #CCCCCC;
 $nobel: #B4B4B4;
 $tundora: #4D4D4D;
 $mineshaft: #3F3F3F;
-$lapalma: rgb(10, 105, 24);
+$sanfelix: #0A6918;
 
 %unselectable {
   -webkit-user-select: none;
@@ -47,7 +48,7 @@ ul {
 }
 
 a {
-  color: $lapalma;
+  color: $sanfelix;
   text-decoration: none;
 }
 
@@ -72,9 +73,6 @@ a {
     position: relative;
   }
   li {
-    &:last-child .link {
-      border-bottom: 0;
-    }
     i {
       @include prefix(transition, all 0.4s linear)
       position: absolute;
@@ -88,13 +86,16 @@ a {
         font-size: 16px;
       }
     }
+    &:last-child .link {
+      border-bottom: 0;
+    }
     &.open {
       .menu-header {
-        color: $lapalma;
+        color: $sanfelix;
         border-bottom: 0;
       }
       i {
-        color: $lapalma;
+        color: $sanfelix;
         &.fa-chevron-down {
           @include prefix(transform, rotate(180deg));
         }
@@ -102,11 +103,11 @@ a {
       .i-container {
         i {
           @include prefix(transition, all 0.1s linear)
-          color: $white;
+          color: $ghost;
         }
         &:hover {
           i {
-            color: $lapalma;
+            color: $white;
           }
         }
       }
@@ -132,12 +133,12 @@ a {
       background: linear-gradient(to right, rgba($tundora, 0), $tundora 50%);
     }
     &:hover {
-      background: $lapalma;
+      background: $sanfelix;
       color: $white;
       &:after {
         @include pseudo;
         @extend %entry-fadeout;
-        background: linear-gradient(to right, rgba($lapalma, 0), $lapalma 50%);
+        background: linear-gradient(to right, rgba($sanfelix, 0), $sanfelix 50%);
       }
     }
     &:last-child {

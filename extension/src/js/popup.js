@@ -48,10 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
   loadUrls();
   loadEntities();  
 
-  // Toggle entity highlighting
+  // Settings
+  loadHighlightStatus();
   $("#toggleHighlight").click(toggleHighlight);
-
-  // Clear history
   $("#clearHistory").click(clearHistory);
 
   // Copyright
@@ -135,19 +134,21 @@ function clearHistory() {
   }
 }
 
+function loadHighlightStatus() {
+  getDataAsync({entityHighlighting:false}, (data) => {
+    return data.entityHighlighting;
+  }).then((highlightStatus) => {
+    return setHighlightAsync(highlightStatus);
+  }).catch(console.log.bind(console));
+}
+
 function toggleHighlight() {
   getDataAsync({entityHighlighting:false}, (data) => {
     return !data.entityHighlighting;
   }).then((toggledVal) => {
     return setDataAsync('entityHighlighting', toggledVal);
-  }).then((toggledVal) => {
-    if (toggledVal) {
-      return injectResourcesAsync(['src/js/async-operations.js']).then(() => {
-        return executeScriptAsync('src/js/add-highlight.js');
-      });
-    } else {
-      return executeScriptAsync('src/js/rm-highlight.js');
-    }
+  }).then((highlightStatus) => {
+    return setHighlightAsync(highlightStatus);
   }).catch(console.log.bind(console));
 }
 

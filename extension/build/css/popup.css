@@ -27,7 +27,7 @@ ul {
   list-style: none; }
 
 a {
-  color: #0a6918;
+  color: #0A6918;
   text-decoration: none; }
 
 .accordion {
@@ -52,8 +52,6 @@ a {
     font-weight: 700;
     border-bottom: 1px solid #CCCCCC;
     position: relative; }
-  .accordion li:last-child .link {
-    border-bottom: 0; }
   .accordion li i {
     -webkit-transition: all 0.4s linear;
     -moz-transition: all 0.4s linear;
@@ -69,11 +67,13 @@ a {
       right: 12px;
       left: auto;
       font-size: 16px; }
+  .accordion li:last-child .link {
+    border-bottom: 0; }
   .accordion li.open .menu-header {
-    color: #0a6918;
+    color: #0A6918;
     border-bottom: 0; }
   .accordion li.open i {
-    color: #0a6918; }
+    color: #0A6918; }
     .accordion li.open i.fa-chevron-down {
       -webkit-transform: rotate(180deg);
       -moz-transform: rotate(180deg);
@@ -86,9 +86,9 @@ a {
     -ms-transition: all 0.1s linear;
     -o-transition: all 0.1s linear;
     transition: all 0.1s linear;
-    color: #FFFFFF; }
+    color: rgba(255, 255, 255, 0.5); }
   .accordion li.open .i-container:hover i {
-    color: #0a6918; }
+    color: #FFFFFF; }
   .accordion li.default .submenu {
     display: block; }
 
@@ -107,13 +107,13 @@ a {
       position: absolute;
       background: linear-gradient(to right, rgba(77, 77, 77, 0), #4D4D4D 50%); }
     .submenu li:hover {
-      background: #0a6918;
+      background: #0A6918;
       color: #FFFFFF; }
       .submenu li:hover:after {
         content: "";
         display: block;
         position: absolute;
-        background: linear-gradient(to right, rgba(10, 105, 24, 0), #0a6918 50%); }
+        background: linear-gradient(to right, rgba(10, 105, 24, 0), #0A6918 50%); }
     .submenu li:last-child {
       border-bottom: 0; }
   .submenu a {

@@ -49,3 +49,17 @@ function executeScriptAsync(file) {
     });
   });
 }
+
+function setHighlightAsync(highlightStatus) {
+  if (highlightStatus) {
+    $("#highlightStatus").text("Highlighting: ON");
+    $("#highlightIcon").css("color", "rgba(255, 255, 255, 1)");
+    return injectResourcesAsync(['src/js/async-operations.js']).then(() => {
+      return executeScriptAsync('src/js/add-highlight.js');
+    }).catch(console.log.bind(console));
+  } else {
+    $("#highlightStatus").text("Highlighting: OFF");
+    $("#highlightIcon").css("color", "rgba(255, 255, 255, .5)");
+    return executeScriptAsync('src/js/rm-highlight.js');
+  }
+}
